@@ -4,15 +4,35 @@ module SinCreator exposing (..)
 Emily Hodder - 400008260
 Evan Kieft - 001315430
 
-User: Who is your imagined user
-Activity: What activity is your user engaged in
-Emotion: How does your user feel about this activity
-Tasks: What tasks are part of this activity
+User: A young elementary school student
+
+Activity: The user is creating an annimation for a class project. They want 
+    their objects to, move around the screen, and are using the SinCreator 
+    to help generate the motions. They will be making multiple objects, 
+    and will want to know how they will move in relaton to eachother
+
+Emotion: The user is excited about their activity of creating an annimation,
+    but anxious and confused about how to use the SinCreator to annimate
+    their objects as they have no knowledge of the mathematics of a sin wave.
+
+Tasks: This activity will involve the user creating multiple objects of
+    different shapes and sizes. They will then annimate the motion of each
+    object. They will want to be able to see how the objects will interact 
+    with each other.
+
+*** Come back to this ***
 Typical Interaction: Describe a typical interaction 
     of your user (the TAs will test this out, so include sufficient detail)
-Principle 1: First of Norman's principles and how it guided your design
-Principle 2: Second of Norman's principles and how it guided your design
 
+*** Edit this ***
+Principle 1: Affordances & signifiers? I want the user to be able to display multiple
+    shapes at a time and obviously we need to properly signify this functionality
+
+Principle 2: Feedback. Being able to put multiple shapes allows the user 
+    to get instant feedback about how their shape will interact with other
+    moving shapes they have already created. Otherwise, they would have to
+    continuously copy the created code to their final annimation and run it,
+    hoping that they options they chose are correct.
 -}
 
 import Array exposing (..)
