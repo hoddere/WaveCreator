@@ -747,7 +747,7 @@ update msg model =
 
         MouseUp ->
             { model | currentButton = None }
-        
+
         Toggle MoveX ->
             { model | hasMoveX = not model.hasMoveX }
 
@@ -775,12 +775,14 @@ update msg model =
         Toggle EditableXSin ->
             { model | hasEditableXSin = not model.hasEditableXSin }
 
+
+
 transforms model =
     group
-        [ --rect 140 70 |> filled (rgba 255 255 255 0.5) |> addOutline (solid 1) lightGrey |> move ( -35, -21 )
-        --, rect 95 12 |> filled white |> addOutline (solid 1) lightGrey |> move ( -45, 14 )
-        text "Apply Transforms! (Pick one)" |> serif |> italic |> size 10 |> filled titleColour |> move ( 20, 15 )
-        {-}, group <|
+        [ rect 140 70 |> filled (rgba 255 255 255 0.5) |> addOutline (solid 1) lightGrey |> move ( -35, -21 )
+        , rect 95 12 |> filled white |> addOutline (solid 1) lightGrey |> move ( -45, 14 )
+        , text "Apply Transforms! (Pick one)" |> serif |> italic |> size 10 |> filled titleColour |> move ( -85, 11 )
+        , group <|
             List.map2
                 (\ss y ->
                     transformString model ss
@@ -789,13 +791,13 @@ transforms model =
                         |> size 10
                         |> filled black
                         |> notifyTap (Toggle ss)
-                        |> move ( 68, -2.5 )
+                        |> move ( -85, 11 )
                         |> time4 model ss 140 10
-                        |> move ( -35, y )
+                        |> move ( -85, y )
                 )
                 [ ScaleU, MoveX, MoveY, MoveCircle, URotate, ScaleX, ScaleY, MakeTransparent, EditableXSin ]
                 (List.map (\x -> -10 * Basics.toFloat x) (List.range 0 20))
-    -} ]
+        ]
 
 transformString m t =
     case t of
@@ -960,65 +962,6 @@ moveText mv =
 
         NegVFun ->
             "-v"
-
-{- cycleTransforms tr =
-    case tr of
-        ScaleU ->
-            URotate
-
-        URotate ->
-            ScaleX
-
-        ScaleX ->
-            ScaleY
-
-        ScaleY ->
-            MakeTransparent
-
-        MakeTransparent ->
-            MoveX
-
-        MoveX ->
-            MoveY
-
-        MoveY ->
-            MoveCircle
-
-        MoveCircle ->
-            EditableXSin
-
-        EditableXSin ->
-            ScaleU
-
-
-cycleTransformsReverse tr =
-    case tr of
-        URotate ->
-            ScaleU
-
-        ScaleX ->
-            URotate
-
-        ScaleY ->
-            ScaleX
-
-        MakeTransparent ->
-            ScaleY
-
-        MoveX ->
-            MakeTransparent
-
-        MoveY ->
-            MoveX
-
-        MoveCircle ->
-            MoveY
-
-        EditableXSin ->
-            MoveCircle
-
-        ScaleU ->
-            EditableXSin -}
 
 
 applyTransforms tr model =
@@ -1202,19 +1145,24 @@ view model =
                 , copiable ("  |> outlined (solid 0.25) rgb (" ++ String.fromFloat model.rScale ++ "*" ++ showFun model.rFun u v ++ " " ++ String.fromFloat model.gScale ++ "*" ++ showFun model.gFun u v ++ " " ++ String.fromFloat model.bScale ++ "*" ++ showFun model.bFun u v ++ ")") |> move ( 35, 22 )
                 , copiable ("  " ++ applyTransformsYourCode model model.uTransform) |> move ( 35, 12 )
                 , copiable ("  |> move(" ++ moveText model.moveX1 ++ "," ++ moveText model.moveY1 ++ ")") |> move ( 35, 2 )
+                , copiable "--Add the following code to your shapes:" |> move ( 0, -8 )
+                , copiable "mySquare" |> move ( 10, -18 )
                 ]
 
         transformsGraphicsGroup =
             group
                 [ rect 210 200 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( -25, 70 )
                 , square 15 |> outlined (solid 1) (rgb model.r model.g model.b) |> applyTransforms model.uTransform model |> move ( -25, 70 )
+                , text (applyTransformsText ScaleU) |> size 10 |> filled black |> move ( 4, 105 )
+                , text (applyTransformsText URotate) |> size 10 |> filled black |> move ( 30, 105 )
                 --, group
-                --    [ text (applyTransformsText model.uTransform) |> size 10 |> filled black |> move ( 4, 105 )
+                    --[ transforms--text (applyTransformsText ScaleU) |> size 10 |> filled black |> move ( 4, 105 )
+                      --, text (applyTransformsText URotate) |> size 10 |> filled black |> move ( 4, 105 )
                 --    , triangle 8 |> filled (rgb 255 10 10) |> rotate (degrees 180) |> notifyTap UTransformsReverse |> move ( -70, 105 ) |> notifyLeave (TransM (\m -> { m | transformsLeftArrowTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsLeftArrowTransp = 1 })) |> makeTransparent model.transformsLeftArrowTransp
                 --    , triangle 8 |> filled (rgb 255 10 10) |> notifyTap UTransforms |> move ( 100, 105 ) |> notifyLeave (TransM (\m -> { m | transformsRightArrowTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsRightArrowTransp = 1 })) |> makeTransparent model.transformsRightArrowTransp
                 --, text (moveText model.transformFun) |> size 10 |> filled black |> notifyTap TransformsFunctionChange |> move ( x1, 105 ) |> notifyLeave (TransM (\m -> { m | transformsNumTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsNumTransp = 1 })) |> makeTransparent model.transformsNumTransp
-                --    ]
-                --    |> move ( 30, 50 )
+                    --]
+                    --|> move ( 30, 50 )
                 ]
 
         setofTriangles =
@@ -1239,7 +1187,7 @@ view model =
                 , circle 2 |> filled (rgb model.r model.g model.b) |> move ( -50 + model.uScale * notTrigCycleU uArg, 50 + u )
                 ]
 
-        
+        --transformTitles = transforms --tt "Apply Transforms (pick one)" |> move ( 55, 30 )
 
         cosLabel =
             text (String.fromFloat model.uScale ++ "* cos(" ++ cosinString model) |> fixedwidth |> size 8 |> filled black |> rotate (degrees 90) |> move ( -105, -100 ) |> notifyTap (TransM (\m -> { m | trigCycleU = Cos }))
@@ -1252,18 +1200,21 @@ view model =
         , group (cosCurve model) |> move ( -50, 0 )
         , trigGraphAxis model |> move ( -185, 70 )
         , circleGraphics
+        --, transforms model
         ]
         |> move ( -140, 70 )
     , cosLabel |> move ( -127, 20 )
     , transformsGraphicsGroup |> move ( 0, -110 )
+    --, group (transforms model) |> move ( 50, 20 )
     , group
         [ functionText model |> move ( 5, 150 )
         , setofTriangles |> move ( 0, 165 )
         ]
         |> move ( -20, 15 )
+    --, transforms model |> move ( -150, 30 )
     , yourCodeGroup |> move ( 40, 110 )
-    , transforms model |> move ( 75, 30 )
     ]
+
 
 
 upArrow =

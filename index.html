@@ -18649,6 +18649,7 @@ var $author$project$SinCreator$TransM = function (a) {
 };
 var $author$project$SinCreator$UDilationMinus = {$: 'UDilationMinus'};
 var $author$project$SinCreator$UDilationPlus = {$: 'UDilationPlus'};
+var $author$project$SinCreator$URotate = {$: 'URotate'};
 var $author$project$SinCreator$UScaleMinus = {$: 'UScaleMinus'};
 var $author$project$SinCreator$UScalePlus = {$: 'UScalePlus'};
 var $author$project$SinCreator$UShiftMinus = {$: 'UShiftMinus'};
@@ -18681,6 +18682,28 @@ var $author$project$SinCreator$applyTransforms = F2(
 					_Utils_Tuple2(model.uCosGraph, 0));
 		}
 	});
+var $author$project$SinCreator$applyTransformsText = function (tr) {
+	switch (tr.$) {
+		case 'MoveX':
+			return ' move x ';
+		case 'MoveY':
+			return ' move y ';
+		case 'MoveCircle':
+			return ' move in a circle ';
+		case 'ScaleU':
+			return ' scale ';
+		case 'URotate':
+			return ' rotate ';
+		case 'ScaleX':
+			return ' scaleX ';
+		case 'ScaleY':
+			return ' scaleY ';
+		case 'MakeTransparent':
+			return ' makeTransparent ';
+		default:
+			return ' editable Y Sin ';
+	}
+};
 var $elm$core$String$right = F2(
 	function (n, string) {
 		return (n < 1) ? '' : A3(
@@ -18866,24 +18889,6 @@ var $author$project$SinCreator$sinCurve = function (model) {
 			points));
 };
 var $author$project$SinCreator$titleColour = A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, 200, 0, 0, 0.95);
-var $author$project$SinCreator$transforms = function (model) {
-	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
-		_List_fromArray(
-			[
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$move,
-				_Utils_Tuple2(20, 15),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-					$author$project$SinCreator$titleColour,
-					A2(
-						$MacCASOutreach$graphicsvg$GraphicSVG$size,
-						10,
-						$MacCASOutreach$graphicsvg$GraphicSVG$italic(
-							$MacCASOutreach$graphicsvg$GraphicSVG$serif(
-								$MacCASOutreach$graphicsvg$GraphicSVG$text('Apply Transforms! (Pick one)'))))))
-			]));
-};
 var $author$project$SinCreator$trigGraphAxis = function (model) {
 	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
 		_List_fromArray(
@@ -18976,7 +18981,15 @@ var $author$project$SinCreator$view = function (model) {
 				$MacCASOutreach$graphicsvg$GraphicSVG$move,
 				_Utils_Tuple2(35, 2),
 				$author$project$SinCreator$copiable(
-					'  |> move(' + ($author$project$SinCreator$moveText(model.moveX1) + (',' + ($author$project$SinCreator$moveText(model.moveY1) + ')')))))
+					'  |> move(' + ($author$project$SinCreator$moveText(model.moveX1) + (',' + ($author$project$SinCreator$moveText(model.moveY1) + ')'))))),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(0, -8),
+				$author$project$SinCreator$copiable('--Add the following code to your shapes:')),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(10, -18),
+				$author$project$SinCreator$copiable('mySquare'))
 			]));
 	var tt = function (str) {
 		return A2(
@@ -19014,7 +19027,29 @@ var $author$project$SinCreator$view = function (model) {
 						$MacCASOutreach$graphicsvg$GraphicSVG$outlined,
 						$MacCASOutreach$graphicsvg$GraphicSVG$solid(1),
 						A3($MacCASOutreach$graphicsvg$GraphicSVG$rgb, model.r, model.g, model.b),
-						$MacCASOutreach$graphicsvg$GraphicSVG$square(15))))
+						$MacCASOutreach$graphicsvg$GraphicSVG$square(15)))),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(4, 105),
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+					$MacCASOutreach$graphicsvg$GraphicSVG$black,
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$size,
+						10,
+						$MacCASOutreach$graphicsvg$GraphicSVG$text(
+							$author$project$SinCreator$applyTransformsText($author$project$SinCreator$ScaleU))))),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(30, 105),
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+					$MacCASOutreach$graphicsvg$GraphicSVG$black,
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$size,
+						10,
+						$MacCASOutreach$graphicsvg$GraphicSVG$text(
+							$author$project$SinCreator$applyTransformsText($author$project$SinCreator$URotate)))))
 			]));
 	var setofTriangles = $MacCASOutreach$graphicsvg$GraphicSVG$group(
 		_List_fromArray(
@@ -19245,11 +19280,7 @@ var $author$project$SinCreator$view = function (model) {
 			A2(
 			$MacCASOutreach$graphicsvg$GraphicSVG$move,
 			_Utils_Tuple2(40, 110),
-			yourCodeGroup),
-			A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$move,
-			_Utils_Tuple2(75, 30),
-			$author$project$SinCreator$transforms(model))
+			yourCodeGroup)
 		]);
 };
 var $author$project$TextCreator$BlueDown = {$: 'BlueDown'};
