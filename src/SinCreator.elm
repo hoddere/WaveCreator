@@ -7,32 +7,26 @@ Evan Kieft - 001315430
 User: A young elementary school student
 
 Activity: The user is creating an annimation for a class project. They want 
-    their objects to, move around the screen, and are using the SinCreator 
-    to help generate the motions. They will be making multiple objects, 
-    and will want to know how they will move in relaton to eachother
+    their objects to be able to move, and are using the SinCreator 
+    to help generate the motions.
 
 Emotion: The user is excited about their activity of creating an annimation,
     but anxious and confused about how to use the SinCreator to annimate
-    their objects as they have no knowledge of the mathematics of a sin wave.
+    their objects as they have no knowledge of the mathematics of a sin wave,
+    and very minimal knowledge of elm.
 
-Tasks: This activity will involve the user creating multiple objects of
-    different shapes and sizes. They will then annimate the motion of each
-    object. They will want to be able to see how the objects will interact 
-    with each other.
+Tasks: This activity will involve the user creating and annimating objects.
+    Each object will have it's own unique characteristics, and many of the
+    objects will move, change size, etc.
 
 *** Come back to this ***
 Typical Interaction: Describe a typical interaction 
     of your user (the TAs will test this out, so include sufficient detail)
 
-*** Edit this ***
-Principle 1: Affordances & signifiers? I want the user to be able to display multiple
-    shapes at a time and obviously we need to properly signify this functionality
+*** ????? ***
+Principle 1:
 
-Principle 2: Feedback. Being able to put multiple shapes allows the user 
-    to get instant feedback about how their shape will interact with other
-    moving shapes they have already created. Otherwise, they would have to
-    continuously copy the created code to their final annimation and run it,
-    hoping that they options they chose are correct.
+Principle 2: 
 -}
 
 import Array exposing (..)
