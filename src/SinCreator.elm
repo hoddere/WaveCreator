@@ -23,10 +23,12 @@ Tasks: This activity will involve the user creating and annimating objects.
 Typical Interaction: Describe a typical interaction 
     of your user (the TAs will test this out, so include sufficient detail)
 
-*** ????? ***
-Principle 1:
+Principle 1: Discoverability
+    Text is visible for the different types of annimations available
+    Multiple annimations are available to use on the one object
 
-Principle 2: 
+Principle 2: Conceptual Model
+    
 -}
 
 import Array exposing (..)
@@ -82,8 +84,6 @@ init =
     , buttonDownTime = 0
     , transformsRightArrowTransp = 0.25
     , transformsLeftArrowTransp = 0.25
-
-    --, transformsNumTransp = 0.25
     , moveTextX = 0.25
     , moveTextY = 0.25
     , moveTextX1 = 0.25
@@ -94,11 +94,20 @@ init =
     , addAnotherFuncTransp = 0.25
     , uTextTransp = 0.5
     , vTextTransp = 0.5
-    , maxAmplitude = 40
+    , maxAmplitude = 20
     , maxFrequency = 10
     , maxShift = 2 * Basics.pi
     , cosWaveLength = 200
     , sinWaveLength = 100
+    , hasScaleU = False
+    , hasMoveX = False
+    , hasMoveY = False
+    , hasMoveCircle = False
+    , hasURotate = False
+    , hasScaleX = False
+    , hasScaleY = False
+    , hasMakeTransparent = False
+    , hasEditableXSin = False
     }
 
 
@@ -125,13 +134,6 @@ type Msg m
     | VDilationMinus
     | TrigCycleU
     | TrigCycleV
-    | UTransforms
-    | UTransformsReverse
-      --| MoveX
-      --| MoveY
-      --| MoveX1
-      --| MoveY1
-      --| TransformsFunctionChange
     | RScalePlus
     | RScaleMinus
     | GScalePlus
@@ -140,6 +142,7 @@ type Msg m
     | BScaleMinus
     | ButtonDown ButtonDir
     | MouseUp
+    | Toggle Transforms
 
 
 type Notifications
@@ -364,10 +367,24 @@ update msg model =
                 , uShift =
                     case model.currentButton of
                         ShiftUp ->
-                            model.uShift + curveX model.buttonDownTime
+                            if model.uShift <= model.maxShift then
+                                model.uShift + curveX model.buttonDownTime
+
+                            else if model.uShift >= model.maxFrequency then
+                                model.maxShift
+
+                            else
+                                model.uShift
 
                         ShiftDown ->
-                            model.uShift - curveX model.buttonDownTime
+                            if model.uShift > -model.maxShift then
+                                model.uShift - curveX model.buttonDownTime
+
+                            else if model.uShift > model.maxFrequency then
+                                -model.maxShift
+
+                            else
+                                model.uShift
 
                         _ ->
                             model.uShift
@@ -506,7 +523,6 @@ update msg model =
         TransM t ->
             t model
 
-        -- ran out of room for notifications, but left them here for a possible future improvement
         Notif notif ->
             { model | notify = notif }
 
@@ -622,15 +638,29 @@ update msg model =
         UShiftPlus ->
             { model
                 | uArg =
-                    model.uArg + model.uShiftScale * Basics.pi / 4
-                , uShift = model.uShift + model.uShiftScale
+                    if model.uShift < model.maxShift then
+                        model.uArg + model.uShiftScale * Basics.pi / 4
+                    else
+                        0
+                , uShift = 
+                    if model.uShift < 7 then
+                        model.uShift + model.uShiftScale
+                    else
+                        0
             }
-
+        
         UShiftMinus ->
             { model
                 | uArg =
-                    model.uArg - model.uShiftScale * Basics.pi / 4
-                , uShift = model.uShift - model.uShiftScale
+                    if model.uShift > -model.maxShift then
+                        model.uArg - model.uShiftScale * Basics.pi / 4
+                    else
+                        0
+                , uShift = 
+                    if model.uShift > -7 then
+                        model.uShift - model.uShiftScale
+                    else
+                        0
             }
 
         EditableScalePlus ->
@@ -712,35 +742,90 @@ update msg model =
         TrigCycleV ->
             { model | trigCycleV = cycleTrig model.trigCycleV }
 
-        UTransforms ->
-            { model | uTransform = cycleTransforms model.uTransform }
-
-        UTransformsReverse ->
-            { model | uTransform = cycleTransformsReverse model.uTransform }
-
-        {-
-           MoveX ->
-               { model | moveX = cycleFunZero model.moveX }
-
-           MoveY ->
-               { model | moveY = cycleFunZero model.moveY }
-
-           MoveX1 ->
-               { model | moveX1 = cycleFunZero model.moveX1 }
-
-           MoveY1 ->
-               { model | moveY1 = cycleFunZero model.moveY1 }
-           TransformsFunctionChange ->
-                  { model | transformFun = cycleFunZero model.transformFun }
-        -}
         ButtonDown dir ->
             { model | currentButton = dir }
 
         MouseUp ->
             { model | currentButton = None }
+        
+        Toggle MoveX ->
+            { model | hasMoveX = not model.hasMoveX }
 
+        Toggle MoveY ->
+            { model | hasMoveY = not model.hasMoveY }
 
+        Toggle URotate ->
+            { model | hasURotate = not model.hasURotate }
 
+        Toggle ScaleU ->
+            { model | hasScaleU = not model.hasScaleU }
+
+        Toggle ScaleX ->
+            { model | hasScaleX = not model.hasScaleX }
+
+        Toggle ScaleY ->
+            { model | hasScaleY = not model.hasScaleY }
+
+        Toggle MakeTransparent ->
+            { model | hasMakeTransparent = not model.hasMakeTransparent }
+
+        Toggle MoveCircle ->
+            { model | hasMoveCircle = not model.hasMoveCircle }
+
+        Toggle EditableXSin ->
+            { model | hasEditableXSin = not model.hasEditableXSin }
+
+transforms model =
+    group
+        [ --rect 140 70 |> filled (rgba 255 255 255 0.5) |> addOutline (solid 1) lightGrey |> move ( -35, -21 )
+        --, rect 95 12 |> filled white |> addOutline (solid 1) lightGrey |> move ( -45, 14 )
+        text "Apply Transforms! (Pick one)" |> serif |> italic |> size 10 |> filled titleColour |> move ( 20, 15 )
+        {-}, group <|
+            List.map2
+                (\ss y ->
+                    transformString model ss
+                        |> text
+                        |> fixedwidth
+                        |> size 10
+                        |> filled black
+                        |> notifyTap (Toggle ss)
+                        |> move ( 68, -2.5 )
+                        |> time4 model ss 140 10
+                        |> move ( -35, y )
+                )
+                [ ScaleU, MoveX, MoveY, MoveCircle, URotate, ScaleX, ScaleY, MakeTransparent, EditableXSin ]
+                (List.map (\x -> -10 * Basics.toFloat x) (List.range 0 20))
+    -} ]
+
+transformString m t =
+    case t of
+        MoveX ->
+            "Move along X"
+            
+        MoveY ->
+            "Move along Y"
+
+        MoveCircle ->
+            "Move in a Circle"
+
+        URotate ->
+            "Rotate"
+
+        ScaleU ->
+            "Scale"
+
+        ScaleX ->
+            "Stretch in X direction"
+
+        ScaleY ->
+            "Stretch in Y direction"
+
+        MakeTransparent ->
+            "Blink (MakeTransparent)"
+        
+        EditableXSin ->
+            "Move in X direction (editable)"
+            
 -- make the Collage fit in VGA screen minus menu bars, for Chromebooks and iPads
 
 
@@ -767,6 +852,40 @@ showFun f u v =
         VFun ->
             "v"
 
+time4 model t w h shape =
+    if
+        case t of
+            MoveX ->
+                model.hasMoveX
+                
+            MoveY ->
+                model.hasMoveY
+                
+            MoveCircle ->
+                model.hasMoveCircle
+
+            URotate ->
+                model.hasURotate
+
+            ScaleX ->
+                model.hasScaleX
+                
+            ScaleY ->
+                model.hasScaleY
+                
+            ScaleU ->
+                model.hasScaleU
+
+            EditableXSin ->
+                model.hasEditableXSin
+
+            MakeTransparent ->
+                model.hasMakeTransparent
+    then
+        group [ rect w h |> filled (rgba 255 137 5 (0.6 + 0.4 * sin (5 * model.time - 1.5))), shape ]
+
+    else
+        shape
 
 cycleFun f =
     case f of
@@ -842,36 +961,7 @@ moveText mv =
         NegVFun ->
             "-v"
 
-
-
-{-
-   moveFun mv model =
-       let
-           u =
-               model.u
-
-           v =
-               model.v
-       in
-       case mv of
-           ZeroFun ->
-               u
-
-           UFunZero ->
-               u
-
-           NegUFun ->
-               -u
-
-           VFunZero ->
-               v
-
-           NegVFun ->
-               -v
--}
-
-
-cycleTransforms tr =
+{- cycleTransforms tr =
     case tr of
         ScaleU ->
             URotate
@@ -928,7 +1018,7 @@ cycleTransformsReverse tr =
             MoveCircle
 
         ScaleU ->
-            EditableXSin
+            EditableXSin -}
 
 
 applyTransforms tr model =
@@ -1106,55 +1196,27 @@ view model =
         yourCodeGroup =
             group
                 [ rect 200 100 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( 100, 20 )
-                , copiable "--Add these new definitions to your code" |> move ( 0, 60 )
-                , copiable ("u = " ++ String.fromFloat model.uScale ++ "*" ++ textTrig model.trigCycleU ++ "(" ++ String.fromFloat model.uDilation ++ "*model.time+" ++ String.fromFloat model.uShift ++ ")") |> move ( 0, 50 )
-                , copiable "mySquare = square 15" |> move ( 0, 30 )
-                , copiable ("  |> outlined (solid 0.25) rgb (" ++ String.fromFloat model.rScale ++ "*" ++ showFun model.rFun u v ++ " " ++ String.fromFloat model.gScale ++ "*" ++ showFun model.gFun u v ++ " " ++ String.fromFloat model.bScale ++ "*" ++ showFun model.bFun u v ++ ")") |> move ( 35, 20 )
-                , copiable ("  " ++ applyTransformsYourCode model model.uTransform) |> move ( 35, 10 )
-                , copiable ("  |> move(" ++ moveText model.moveX1 ++ "," ++ moveText model.moveY1 ++ ")") |> move ( 35, 0 )
-                , copiable "--Add the following code to your shapes:" |> move ( 0, -10 )
-                , copiable "mySquare" |> move ( 10, -20 )
+                , copiable "--Add these new definitions to your code" |> move ( 0, 62 )
+                , copiable ("u = " ++ String.fromFloat model.uScale ++ "*" ++ textTrig model.trigCycleU ++ "(" ++ String.fromFloat model.uDilation ++ "*model.time+" ++ String.fromFloat model.uShift ++ ")") |> move ( 0, 52 )
+                , copiable "mySquare = square 15" |> move ( 0, 32 )
+                , copiable ("  |> outlined (solid 0.25) rgb (" ++ String.fromFloat model.rScale ++ "*" ++ showFun model.rFun u v ++ " " ++ String.fromFloat model.gScale ++ "*" ++ showFun model.gFun u v ++ " " ++ String.fromFloat model.bScale ++ "*" ++ showFun model.bFun u v ++ ")") |> move ( 35, 22 )
+                , copiable ("  " ++ applyTransformsYourCode model model.uTransform) |> move ( 35, 12 )
+                , copiable ("  |> move(" ++ moveText model.moveX1 ++ "," ++ moveText model.moveY1 ++ ")") |> move ( 35, 2 )
                 ]
 
         transformsGraphicsGroup =
             group
-                [ rect 210 200 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( 45, 70 )
-                , square 15 |> outlined (solid 1) (rgb model.r model.g model.b) |> applyTransforms model.uTransform model |> move ( 45, 60 )
-                , group
-                    [ text (applyTransformsText model.uTransform) |> size 10 |> filled black |> move ( 4, 105 )
-                    , triangle 8 |> filled (rgb 255 10 10) |> rotate (degrees 180) |> notifyTap UTransformsReverse |> move ( -70, 105 ) |> notifyLeave (TransM (\m -> { m | transformsLeftArrowTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsLeftArrowTransp = 1 })) |> makeTransparent model.transformsLeftArrowTransp
-                    , triangle 8 |> filled (rgb 255 10 10) |> notifyTap UTransforms |> move ( 100, 105 ) |> notifyLeave (TransM (\m -> { m | transformsRightArrowTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsRightArrowTransp = 1 })) |> makeTransparent model.transformsRightArrowTransp
-
-                    --, text (moveText model.transformFun) |> size 10 |> filled black |> notifyTap TransformsFunctionChange |> move ( x1, 105 ) |> notifyLeave (TransM (\m -> { m | transformsNumTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsNumTransp = 1 })) |> makeTransparent model.transformsNumTransp
-                    ]
-                    |> move ( 30, 50 )
+                [ rect 210 200 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( -25, 70 )
+                , square 15 |> outlined (solid 1) (rgb model.r model.g model.b) |> applyTransforms model.uTransform model |> move ( -25, 70 )
+                --, group
+                --    [ text (applyTransformsText model.uTransform) |> size 10 |> filled black |> move ( 4, 105 )
+                --    , triangle 8 |> filled (rgb 255 10 10) |> rotate (degrees 180) |> notifyTap UTransformsReverse |> move ( -70, 105 ) |> notifyLeave (TransM (\m -> { m | transformsLeftArrowTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsLeftArrowTransp = 1 })) |> makeTransparent model.transformsLeftArrowTransp
+                --    , triangle 8 |> filled (rgb 255 10 10) |> notifyTap UTransforms |> move ( 100, 105 ) |> notifyLeave (TransM (\m -> { m | transformsRightArrowTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsRightArrowTransp = 1 })) |> makeTransparent model.transformsRightArrowTransp
+                --, text (moveText model.transformFun) |> size 10 |> filled black |> notifyTap TransformsFunctionChange |> move ( x1, 105 ) |> notifyLeave (TransM (\m -> { m | transformsNumTransp = 0.25 })) |> notifyEnter (TransM (\m -> { m | transformsNumTransp = 1 })) |> makeTransparent model.transformsNumTransp
+                --    ]
+                --    |> move ( 30, 50 )
                 ]
 
-        {-
-           moveGraphicsY =
-               group
-                   [ rect 120 140 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( 10, -50 )
-                   , square 15 |> filled (rgb model.r model.g model.b) |> move ( moveFun model.moveX model, moveFun model.moveY model ) |> move ( 10, -60 )
-                   , text "|>" |> fixedwidth |> size 10 |> filled black |> move ( -40, 0 )
-                   , text "move(" |> fixedwidth |> size 10 |> filled black |> move ( -25, 0 )
-                   , text (moveText model.moveX) |> fixedwidth |> size 10 |> filled black |> notifyTap MoveX |> move ( 3, 0 ) |> notifyEnter (TransM (\m -> { m | moveTextX = 1 })) |> notifyLeave (TransM (\m -> { m | moveTextX = 0.25 })) |> makeTransparent model.moveTextX
-                   , text "," |> fixedwidth |> size 10 |> filled black |> move ( 14, 0 )
-                   , text (moveText model.moveY) |> fixedwidth |> size 10 |> filled black |> notifyTap MoveY |> move ( 21, 0 ) |> notifyEnter (TransM (\m -> { m | moveTextY = 1 })) |> notifyLeave (TransM (\m -> { m | moveTextY = 0.25 })) |> makeTransparent model.moveTextY
-                   , text ")" |> fixedwidth |> size 10 |> filled black |> move ( 31, 0 )
-                   ]
-
-           moveGraphicsX =
-               group
-                   [ rect 120 140 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( 10, -220 )
-                   , square 15 |> filled (rgb model.r model.g model.b) |> move ( moveFun model.moveX1 model, moveFun model.moveY1 model ) |> move ( 10, -230 )
-                   , text "|>" |> fixedwidth |> size 10 |> filled black |> move ( -40, -170 )
-                   , text "move(" |> fixedwidth |> size 10 |> filled black |> move ( -25, -170 )
-                   , text (moveText model.moveX1) |> fixedwidth |> size 10 |> filled black |> notifyTap MoveX1 |> move ( 3, -170 ) |> notifyEnter (TransM (\m -> { m | moveTextX1 = 1 })) |> notifyLeave (TransM (\m -> { m | moveTextX1 = 0.25 })) |> makeTransparent model.moveTextX1
-                   , text "," |> fixedwidth |> size 10 |> filled black |> move ( 14, -170 )
-                   , text (moveText model.moveY1) |> fixedwidth |> size 10 |> filled black |> notifyTap MoveY1 |> move ( 21, -170 ) |> notifyEnter (TransM (\m -> { m | moveTextY1 = 1 })) |> notifyLeave (TransM (\m -> { m | moveTextY1 = 0.25 })) |> makeTransparent model.moveTextY1
-                   , text ")" |> fixedwidth |> size 10 |> filled black |> move ( 31, -170 )
-                   ]
-        -}
         setofTriangles =
             group
                 [ upArrow |> notifyTap UDilationPlus |> move ( -67, -5 ) |> notifyMouseDown (ButtonDown FrequencyUp) |> notifyMouseUp (ButtonDown None)
@@ -1163,26 +1225,6 @@ view model =
                 , downArrow |> notifyTap UDilationMinus |> move ( -67, -20 ) |> notifyMouseDown (ButtonDown FrequencyDown) |> notifyMouseUp (ButtonDown None)
                 , downArrow |> notifyTap UScaleMinus |> move ( -111, -20 ) |> notifyMouseDown (ButtonDown AmplitudeDown) |> notifyMouseUp (ButtonDown None)
                 , downArrow |> notifyTap UShiftMinus |> move ( 17, -20 ) |> notifyMouseDown (ButtonDown ShiftDown) |> notifyMouseUp (ButtonDown None)
-
-                --, polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, 12 ) ] |> filled red |> makeTransparent 0.25 |> notifyTap VScalePlus |> move ( 60, -5 ) |> rotate (degrees 0) |> notifyMouseDown (ButtonDown VUP) |> notifyMouseUp (ButtonDown None)
-                --, polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, 12 ) ] |> filled red |> makeTransparent 0.25 |> notifyTap VDilationPlus |> move ( 95, -5 )
-                --, polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, 12 ) ] |> filled red |> makeTransparent 0.25 |> notifyTap VScaleMinus |> rotate (degrees 180) |> move ( 60, -20 ) |> notifyMouseDown (ButtonDown VDown) |> notifyMouseUp (ButtonDown None)
-                --, polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, 12 ) ] |> filled red |> makeTransparent 0.25 |> notifyTap VDilationMinus |> rotate (degrees 180) |> move ( 95, -20 )
-                ]
-
-        rgbGraphics =
-            group
-                [ rect 140 50 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( 43, -5 )
-                , text "rgb " |> fixedwidth |> size 10 |> filled black |> move ( -25, 0 )
-                , text ("(" ++ String.fromFloat model.rScale ++ "*" ++ showFun model.rFun u v ++ ")") |> fixedwidth |> size 10 |> filled black |> move ( -5, 0 ) |> notifyTap R |> notifyEnter (TransM (\m -> { m | rTransp = 1 })) |> notifyLeave (TransM (\m -> { m | rTransp = 0.25 })) |> makeTransparent model.rTransp
-                , text ("(" ++ String.fromFloat model.gScale ++ "*" ++ showFun model.gFun u v ++ ")") |> fixedwidth |> size 10 |> filled black |> move ( 35, 0 ) |> notifyTap G |> notifyEnter (TransM (\m -> { m | gTransp = 1 })) |> notifyLeave (TransM (\m -> { m | gTransp = 0.25 })) |> makeTransparent model.gTransp
-                , text ("(" ++ String.fromFloat model.bScale ++ "*" ++ showFun model.bFun u v ++ ")") |> fixedwidth |> size 10 |> filled black |> move ( 73, 0 ) |> notifyTap B |> notifyEnter (TransM (\m -> { m | bTransp = 1 })) |> notifyLeave (TransM (\m -> { m | bTransp = 0.25 })) |> makeTransparent model.bTransp
-                , triangle 8 |> filled (rgb 255 10 10) |> notifyTap RScalePlus |> move ( 5, -10 ) |> rotate (degrees 90) |> notifyMouseDown (ButtonDown RedUp) |> notifyMouseUp (ButtonDown None)
-                , triangle 8 |> filled (rgb 180 140 140) |> notifyTap RScaleMinus |> rotate (degrees -90) |> move ( 15, -10 ) |> notifyMouseDown (ButtonDown RedDown) |> notifyMouseUp (ButtonDown None)
-                , triangle 8 |> filled (rgb 10 255 10) |> notifyTap GScalePlus |> rotate (degrees 90) |> move ( 43, -10 ) |> notifyMouseDown (ButtonDown GreenUp) |> notifyMouseUp (ButtonDown None)
-                , triangle 8 |> filled (rgb 140 180 140) |> notifyTap GScaleMinus |> rotate (degrees -90) |> move ( 53, -10 ) |> notifyMouseDown (ButtonDown GreenDown) |> notifyMouseUp (ButtonDown None)
-                , triangle 8 |> filled (rgb 10 10 255) |> notifyTap BScalePlus |> rotate (degrees 90) |> move ( 80, -10 ) |> notifyMouseDown (ButtonDown BlueUp) |> notifyMouseUp (ButtonDown None)
-                , triangle 8 |> filled (rgb 140 140 180) |> notifyTap BScaleMinus |> rotate (degrees -90) |> move ( 90, -10 ) |> notifyMouseDown (ButtonDown BlueDown) |> notifyMouseUp (ButtonDown None)
                 ]
 
         -- Circle that rotates in time with the sin & cosin waves
@@ -1197,20 +1239,12 @@ view model =
                 , circle 2 |> filled (rgb model.r model.g model.b) |> move ( -50 + model.uScale * notTrigCycleU uArg, 50 + u )
                 ]
 
-        titlesText =
-            group
-                [ tt "1. Modify your functions!" |> move ( -50, 175 )
-                , tt "2. Choose a colour!" |> move ( 140, 125 )
-                , tt "3. Apply Transforms!" |> move ( 140, 35 )
-                , tt "4. Move it!" |> move ( -220, 5 )
-                , text "--The move function below will be in 'Your Code!' " |> serif |> italic |> size 6 |> filled titleColour |> move ( -250, -5 )
-                , tt "5. Your Code!" |> move ( 40, -70 )
-                ]
+        
 
         cosLabel =
-            text (String.fromFloat model.uScale ++ "* cos(" ++ cosinString model) |> fixedwidth |> size 8 |> filled black |> rotate (degrees 90) |> move ( -110, -82 ) |> notifyTap (TransM (\m -> { m | trigCycleU = Cos }))
+            text (String.fromFloat model.uScale ++ "* cos(" ++ cosinString model) |> fixedwidth |> size 8 |> filled black |> rotate (degrees 90) |> move ( -105, -100 ) |> notifyTap (TransM (\m -> { m | trigCycleU = Cos }))
     in
-    [ graphPaperCustom 10 1 (rgb 255 137 5) |> makeTransparent 0.25 -- axes and selected coordinate ticks
+    [ graphPaperCustom 10 1 (rgb 10 10 10) |> makeTransparent 0.1 -- axes and selected coordinate ticks
     , group
         [ rect 1000 0.5 |> filled brown
         , rect 0.5 1000 |> filled brown
@@ -1219,30 +1253,25 @@ view model =
         , trigGraphAxis model |> move ( -185, 70 )
         , circleGraphics
         ]
-        |> move ( -140, 80 )
-    , titlesText |> makeTransparent 0
-    , cosLabel |> move ( -127, 67 )
-    , transformsGraphicsGroup |> move ( 0, -100 )
-
-    --, moveGraphicsX |> move ( 180, 220 )
-    --, moveGraphicsY |> move ( 60, 50 )
+        |> move ( -140, 70 )
+    , cosLabel |> move ( -127, 20 )
+    , transformsGraphicsGroup |> move ( 0, -110 )
     , group
         [ functionText model |> move ( 5, 150 )
         , setofTriangles |> move ( 0, 165 )
         ]
         |> move ( -20, 15 )
-
-    --, rgbGraphics |> move ( 140, 90 )
     , yourCodeGroup |> move ( 40, 110 )
+    , transforms model |> move ( 75, 30 )
     ]
 
 
 upArrow =
-    polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, 12 ) ] |> filled (rgba 255 0 0 0.6)
+    polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, 12 ) ] |> filled (rgba 128 10 10 0.6)
 
 
 downArrow =
-    polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, -12 ) ] |> filled (rgba 255 0 0 0.6)
+    polygon [ ( -6, 0 ), ( 6, 0 ), ( 0, -12 ) ] |> filled (rgba 128 10 10 0.6)
 
 
 trigGraphAxis model =
@@ -1275,4 +1304,4 @@ copiable str =
 
 
 copiable2 str =
-    str |> text |> selectable |> fixedwidth |> size 9 |> filled black
+    str |> text |> selectable |> fixedwidth |> size 5 |> filled black
