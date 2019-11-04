@@ -17895,142 +17895,6 @@ var $author$project$ShapeCreator$stencils = function (model) {
 						A2($elm$core$List$range, 0, 20))))
 			]));
 };
-var $author$project$ShapeCreator$MakeTransparent = {$: 'MakeTransparent'};
-var $author$project$ShapeCreator$Move = {$: 'Move'};
-var $author$project$ShapeCreator$Rotate = {$: 'Rotate'};
-var $author$project$ShapeCreator$Scale = {$: 'Scale'};
-var $author$project$ShapeCreator$ScaleX = {$: 'ScaleX'};
-var $author$project$ShapeCreator$ScaleY = {$: 'ScaleY'};
-var $author$project$ShapeCreator$Toggle = function (a) {
-	return {$: 'Toggle', a: a};
-};
-var $author$project$ShapeCreator$time4 = F5(
-	function (model, t, w, h, shape) {
-		return function () {
-			switch (t.$) {
-				case 'Move':
-					return model.hasMove;
-				case 'Rotate':
-					return model.hasRotate;
-				case 'Scale':
-					return model.hasScale;
-				case 'ScaleX':
-					return model.hasScaleX;
-				case 'ScaleY':
-					return model.hasScaleY;
-				default:
-					return model.hasMakeTransparent;
-			}
-		}() ? $MacCASOutreach$graphicsvg$GraphicSVG$group(
-			_List_fromArray(
-				[
-					A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-					A4(
-						$MacCASOutreach$graphicsvg$GraphicSVG$rgba,
-						255,
-						137,
-						5,
-						0.6 + (0.4 * $elm$core$Basics$sin((5 * model.time) - 1.5))),
-					A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, w, h)),
-					shape
-				])) : shape;
-	});
-var $author$project$ShapeCreator$transformString = F2(
-	function (m, t) {
-		switch (t.$) {
-			case 'Move':
-				return '|> move (' + ($elm$core$String$fromFloat(m.x) + (',' + ($elm$core$String$fromFloat(m.y) + ')')));
-			case 'Rotate':
-				return '|> rotate (degrees ' + ($elm$core$String$fromFloat(m.angle) + ')');
-			case 'Scale':
-				return '|> scale ' + $elm$core$String$fromFloat(m.scl);
-			case 'ScaleX':
-				return '|> scaleX ' + $elm$core$String$fromFloat(m.sclx);
-			case 'ScaleY':
-				return '|> scaleY ' + $elm$core$String$fromFloat(m.scly);
-			default:
-				return '|> makeTransparent ' + $elm$core$String$fromFloat(m.alpha);
-		}
-	});
-var $author$project$ShapeCreator$transforms = function (model) {
-	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
-		_List_fromArray(
-			[
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$move,
-				_Utils_Tuple2(-35, -21),
-				A3(
-					$MacCASOutreach$graphicsvg$GraphicSVG$addOutline,
-					$MacCASOutreach$graphicsvg$GraphicSVG$solid(1),
-					$MacCASOutreach$graphicsvg$GraphicSVG$lightGrey,
-					A2(
-						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, 255, 255, 255, 0.5),
-						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 140, 70)))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$move,
-				_Utils_Tuple2(-45, 14),
-				A3(
-					$MacCASOutreach$graphicsvg$GraphicSVG$addOutline,
-					$MacCASOutreach$graphicsvg$GraphicSVG$solid(1),
-					$MacCASOutreach$graphicsvg$GraphicSVG$lightGrey,
-					A2(
-						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						$MacCASOutreach$graphicsvg$GraphicSVG$white,
-						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 95, 12)))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$move,
-				_Utils_Tuple2(-85, 11),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-					$author$project$ShapeCreator$titleColour,
-					A2(
-						$MacCASOutreach$graphicsvg$GraphicSVG$size,
-						10,
-						$MacCASOutreach$graphicsvg$GraphicSVG$italic(
-							$MacCASOutreach$graphicsvg$GraphicSVG$serif(
-								$MacCASOutreach$graphicsvg$GraphicSVG$text('4. Apply Transforms!')))))),
-				$MacCASOutreach$graphicsvg$GraphicSVG$group(
-				A3(
-					$elm$core$List$map2,
-					F2(
-						function (ss, y) {
-							return A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(-35, y),
-								A5(
-									$author$project$ShapeCreator$time4,
-									model,
-									ss,
-									140,
-									10,
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$move,
-										_Utils_Tuple2(-68, -2.5),
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-											$author$project$ShapeCreator$Toggle(ss),
-											A2(
-												$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-												$MacCASOutreach$graphicsvg$GraphicSVG$black,
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													10,
-													$MacCASOutreach$graphicsvg$GraphicSVG$fixedwidth(
-														$MacCASOutreach$graphicsvg$GraphicSVG$text(
-															A2($author$project$ShapeCreator$transformString, model, ss)))))))));
-						}),
-					_List_fromArray(
-						[$author$project$ShapeCreator$Scale, $author$project$ShapeCreator$ScaleX, $author$project$ShapeCreator$ScaleY, $author$project$ShapeCreator$Rotate, $author$project$ShapeCreator$Move, $author$project$ShapeCreator$MakeTransparent]),
-					A2(
-						$elm$core$List$map,
-						function (x) {
-							return (-10) * x;
-						},
-						A2($elm$core$List$range, 0, 20))))
-			]));
-};
 var $author$project$ShapeCreator$tweaks = $MacCASOutreach$graphicsvg$GraphicSVG$group(
 	_List_fromArray(
 		[
@@ -18379,6 +18243,12 @@ var $author$project$ShapeCreator$tweaks = $MacCASOutreach$graphicsvg$GraphicSVG$
 						},
 						A2($elm$core$List$range, 0, 20)))))
 		]));
+var $author$project$ShapeCreator$MakeTransparent = {$: 'MakeTransparent'};
+var $author$project$ShapeCreator$Move = {$: 'Move'};
+var $author$project$ShapeCreator$Rotate = {$: 'Rotate'};
+var $author$project$ShapeCreator$Scale = {$: 'Scale'};
+var $author$project$ShapeCreator$ScaleX = {$: 'ScaleX'};
+var $author$project$ShapeCreator$ScaleY = {$: 'ScaleY'};
 var $author$project$ShapeCreator$copiable = function (str) {
 	return A2(
 		$MacCASOutreach$graphicsvg$GraphicSVG$filled,
@@ -18390,6 +18260,23 @@ var $author$project$ShapeCreator$copiable = function (str) {
 				$MacCASOutreach$graphicsvg$GraphicSVG$selectable(
 					$MacCASOutreach$graphicsvg$GraphicSVG$text(str)))));
 };
+var $author$project$ShapeCreator$transformString = F2(
+	function (m, t) {
+		switch (t.$) {
+			case 'Move':
+				return '|> move (' + ($elm$core$String$fromFloat(m.x) + (',' + ($elm$core$String$fromFloat(m.y) + ')')));
+			case 'Rotate':
+				return '|> rotate (degrees ' + ($elm$core$String$fromFloat(m.angle) + ')');
+			case 'Scale':
+				return '|> scale ' + $elm$core$String$fromFloat(m.scl);
+			case 'ScaleX':
+				return '|> scaleX ' + $elm$core$String$fromFloat(m.sclx);
+			case 'ScaleY':
+				return '|> scaleY ' + $elm$core$String$fromFloat(m.scly);
+			default:
+				return '|> makeTransparent ' + $elm$core$String$fromFloat(m.alpha);
+		}
+	});
 var $author$project$ShapeCreator$yourCode = function (m) {
 	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
 		_List_fromArray(
@@ -18620,10 +18507,6 @@ var $author$project$ShapeCreator$view = function (model) {
 			$MacCASOutreach$graphicsvg$GraphicSVG$move,
 			_Utils_Tuple2(230, 169),
 			$author$project$ShapeCreator$colours(model)),
-			A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$move,
-			_Utils_Tuple2(-150, 30),
-			$author$project$ShapeCreator$transforms(model)),
 			A2(
 			$MacCASOutreach$graphicsvg$GraphicSVG$move,
 			_Utils_Tuple2(-150, -50),

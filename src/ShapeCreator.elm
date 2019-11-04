@@ -210,7 +210,7 @@ view model =
     , text "|>" |> filled black |> move ( -40, 165 )
     , stamps model |> move ( 80, 169 )
     , colours model |> move ( 230, 169 )
-    , transforms model |> move ( -150, 30 )
+    --, transforms model |> move ( -150, 30 )
     , tweaks |> move ( -150, -50 )
     , yourCode model |> move ( 0, -115 )
     ]

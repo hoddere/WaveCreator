@@ -16,18 +16,30 @@ Emotion: The user is excited about their activity of creating an annimation,
     and very minimal knowledge of elm.
 
 Tasks: This activity will involve the user creating and annimating objects.
-    Each object will have it's own unique characteristics, and many of the
-    objects will move, change size, etc.
+    Each object will have it's own unique movements
 
-*** Come back to this ***
-Typical Interaction: Describe a typical interaction 
-    of your user (the TAs will test this out, so include sufficient detail)
+Typical Interaction: A student will open the wave creator, wanting to determine
+    the code they must add to their object in order to achieve the movement
+    they would like. The user will already know what way they want their shape
+    to move, but not how to do it or what thay action is called. To start, they
+    will look at the apply transforms section and determine which of those options
+    matches the motion they want to achieve. They will then select the option
+    that fits their needs. They will then adjust the numbers of the sin function
+    accordingly. Lastly, they will copy the movement code that has been generated.
 
-Principle 1: Discoverability
-    Text is visible for the different types of annimations available
-    Multiple annimations are available to use on the one object
+Principle 1: Discoverability. Before the user had to click through all the 
+    possible transformation options, but now they are all clearly displayed.
+    This allows the user to quickly discover what all the possible
+    transformations are and quickly and easily switch between them.
 
-Principle 2: Conceptual Model
+Principle 2: Conceptual Model. The other tabs of the shape creator all have
+    a consistent format for their transformations. They have a section called
+    "Apply Transforms" under which the user can simple click on the 
+    transformation they want and it is automatically added to the shape.
+    However, the wave creator did not follow this conceptual model that has
+    been set out by the other tabs. We altered the design such that it now
+    conforms to the conceptual model, making the application easier for the 
+    user. 
     
 -}
 
@@ -1200,12 +1212,10 @@ view model =
         , group (cosCurve model) |> move ( -50, 0 )
         , trigGraphAxis model |> move ( -185, 70 )
         , circleGraphics
-        --, transforms model
         ]
         |> move ( -140, 70 )
     , cosLabel |> move ( -127, 20 )
     , transformsGraphicsGroup |> move ( 0, -110 )
-    --, group (transforms model) |> move ( 50, 20 )
     , group
         [ functionText model |> move ( 5, 150 )
         , setofTriangles |> move ( 0, 165 )
