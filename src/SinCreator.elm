@@ -761,7 +761,7 @@ update msg model =
             { model | currentButton = None }
 
         Toggle MoveX ->
-            { model | hasMoveX = not model.hasMoveX }
+            { model |  hasMoveX= not model.hasMoveX }
 
         Toggle MoveY ->
             { model | hasMoveY = not model.hasMoveY }
@@ -791,9 +791,11 @@ update msg model =
 
 transforms model =
     group
-        [ rect 140 70 |> filled (rgba 255 255 255 0.5) |> addOutline (solid 1) lightGrey |> move ( -35, -21 )
-        , rect 95 12 |> filled white |> addOutline (solid 1) lightGrey |> move ( -45, 14 )
-        , text "Apply Transforms! (Pick one)" |> serif |> italic |> size 10 |> filled titleColour |> move ( -85, 11 )
+        [ --rect 140 70 |> filled (rgba 255 255 255 0.5) |> addOutline (solid 1) lightGrey |> move ( -35, -21 )
+        --, rect 95 12 |> filled white |> addOutline (solid 1) lightGrey |> move ( -45, 14 )
+          text "Apply Transforms! (Pick one)" |> serif |> italic |> size 10 |> filled titleColour |> move ( 235, 20 )
+        --, text "Scale" |> fixedwidth |> size 10 |> filled black |> move ( 245, 10)|> notifyTap (Toggle ScaleU) |> time4 model ScaleU 140 10
+    
         , group <|
             List.map2
                 (\ss y ->
@@ -803,9 +805,9 @@ transforms model =
                         |> size 10
                         |> filled black
                         |> notifyTap (Toggle ss)
-                        |> move ( -85, 11 )
-                        |> time4 model ss 140 10
-                        |> move ( -85, y )
+                        |> move ( 235, 10 )
+                        --|> time4 model ss 140 10
+                        |> move (0, y )
                 )
                 [ ScaleU, MoveX, MoveY, MoveCircle, URotate, ScaleX, ScaleY, MakeTransparent, EditableXSin ]
                 (List.map (\x -> -10 * Basics.toFloat x) (List.range 0 20))
@@ -866,6 +868,7 @@ showFun f u v =
         VFun ->
             "v"
 
+{-
 time4 model t w h shape =
     if
         case t of
@@ -896,8 +899,15 @@ time4 model t w h shape =
             MakeTransparent ->
                 model.hasMakeTransparent
     then
-        group [ rect w h |> filled (rgba 255 137 5 (0.6 + 0.4 * sin (5 * model.time - 1.5))), shape ]
+        rect w h |> filled (rgba 255 137 5 (0.6 + 0.4 * sin (5 * model.time - 1.5)))
 
+    else
+        shape 
+-}
+time4 model st w h shape =
+    if st == model.uTransform
+    then
+        group [ rect w h |> filled (rgba 255 137 5 (0.6 + 0.4 * sin (5 * model.time - 1.5))), shape ]
     else
         shape
 
@@ -1165,8 +1175,9 @@ view model =
             group
                 [ rect 210 200 |> outlined (solid 1) red |> makeTransparent 0.25 |> move ( -25, 70 )
                 , square 15 |> outlined (solid 1) (rgb model.r model.g model.b) |> applyTransforms model.uTransform model |> move ( -25, 70 )
-                , text (applyTransformsText ScaleU) |> size 10 |> filled black |> move ( 4, 105 )
-                , text (applyTransformsText URotate) |> size 10 |> filled black |> move ( 30, 105 )
+                --, text (applyTransformsText ScaleU) |> size 10 |> filled black |> move ( 4, 105 )
+                --, text (applyTransformsText URotate) |> size 10 |> filled black |> move ( 30, 105 )
+                --, transforms model |> move ( -150, 30 )
                 --, group
                     --[ transforms--text (applyTransformsText ScaleU) |> size 10 |> filled black |> move ( 4, 105 )
                       --, text (applyTransformsText URotate) |> size 10 |> filled black |> move ( 4, 105 )
@@ -1221,7 +1232,7 @@ view model =
         , setofTriangles |> move ( 0, 165 )
         ]
         |> move ( -20, 15 )
-    --, transforms model |> move ( -150, 30 )
+    , transforms model |> move ( -150, 30 )
     , yourCodeGroup |> move ( 40, 110 )
     ]
 
